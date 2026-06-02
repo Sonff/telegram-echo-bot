@@ -124,23 +124,41 @@ bot.on('message', async (ctx) => {
   }
 });
 
-// Start the bot using long polling
-bot.launch()
-  .then(() => {
-    console.log('🚀 Telegram Bot is successfully running and listening for messages...');
-  })
-  .catch((err) => {
-    console.error('Failed to launch the bot:', err);
-  });
-
-// Start a simple HTTP server to satisfy hosting platform health checks (like Render)
 const PORT = process.env.PORT || 3000;
-http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Bot is running!');
-}).listen(PORT, () => {
-  console.log(`Health check server listening on port ${PORT}`);
-});
+const domain = process.env.RENDER_EXTERNAL_URL;
+
+if (domain) {
+  // Production Webhook Mode on Render
+  bot.launch({
+    webhook: {
+      domain: domain,
+      port: parseInt(PORT, 10),
+    },
+  })
+    .then(() => {
+      console.log(`🚀 Bot successfully running on Webhook mode at ${domain}`);
+    })
+    .catch((err) => {
+      console.error('Failed to launch bot in webhook mode:', err);
+    });
+} else {
+  // Local Polling Mode for development
+  bot.launch()
+    .then(() => {
+      console.log('🚀 Bot successfully running on local Polling mode...');
+    })
+    .catch((err) => {
+      console.error('Failed to launch bot in polling mode:', err);
+    });
+
+  // Start a simple HTTP server to satisfy local port checks
+  http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Bot is running locally!');
+  }).listen(PORT, () => {
+    console.log(`Local health check server listening on port ${PORT}`);
+  });
+}
 
 // Enable graceful stop for termination signals
 process.once('SIGINT', () => {
