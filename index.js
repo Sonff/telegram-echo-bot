@@ -31,7 +31,7 @@ if (geminiKey) {
     const genAI = new GoogleGenerativeAI(geminiKey);
     // Use gemini-2.5-flash: fast, lightweight, and supports system instruction
     geminiModel = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash-lite',
       systemInstruction:
         "You are shayan_your_friendly_bot, a warm, polite, and helpful AI assistant created by Shayan. " +
         "You understand and speak all languages in the world fluently. " +
