@@ -105,8 +105,8 @@ bot.on('text', async (ctx) => {
       await ctx.reply(replyText);
     } catch (error) {
       console.error('Error generating content with Gemini:', error);
-      // Fallback in case of API error (rate limits, key issues, etc.)
-      await ctx.reply(`I'm sorry, my AI brain encountered an error. 🧠 Let me just echo what you said:\n\n"${prompt}"`);
+      // Display the actual error for quick and easy debugging
+      await ctx.reply(`I'm sorry, my AI brain encountered an error. 🧠\n\nError details: ${error.message || error}`);
     }
   } else {
     // If no Gemini API key is configured, use the friendly static fallback
